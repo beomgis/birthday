@@ -324,6 +324,12 @@
     .gift-opt .g-desc  { font-size: clamp(11px, 3vw, 12px); color: #9b7daa; margin-top: 3px; line-height: 1.4; }
     .gift-opt .g-check { font-size: 20px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
     .gift-opt.selected .g-check { opacity: 1; }
+    .gift-opt-lucky {
+      border-color: rgba(253,230,138,0.4) !important;
+      background: rgba(253,230,138,0.07) !important;
+    }
+    .gift-opt-lucky .g-name { color: var(--yellow) !important; }
+    .gift-opt-lucky:hover { background: rgba(253,230,138,0.18) !important; border-color: var(--yellow) !important; }
 
     .chosen-msg {
       display: none;
@@ -567,18 +573,18 @@
       <div class="g-check">✅</div>
     </div>
     <div class="gift-opt" id="opt1" onclick="pickGift(1)">
-      <div class="g-icon">🎬</div>
-      <div class="g-info">
-        <div class="g-name">영상 메세지</div>
-        <div class="g-desc">직접 찍어 보내는 진심 담긴 영상 편지!</div>
-      </div>
-      <div class="g-check">✅</div>
-    </div>
-    <div class="gift-opt" id="opt2" onclick="pickGift(2)">
       <div class="g-icon">⭐</div>
       <div class="g-info">
         <div class="g-name">소원권</div>
         <div class="g-desc">소원 하나는 들어줄게! (합리적인 범위 😄)</div>
+      </div>
+      <div class="g-check">✅</div>
+    </div>
+    <div class="gift-opt gift-opt-lucky" id="opt2" onclick="pickGift(2)">
+      <div class="g-icon">🍀</div>
+      <div class="g-info">
+        <div class="g-name">Lucky ✨ 둘 다!</div>
+        <div class="g-desc">사진 요청권 + 소원권 동시 획득!</div>
       </div>
       <div class="g-check">✅</div>
     </div>
@@ -673,14 +679,14 @@ const GIFTS = [
     desc: '원하는 포즈, 장소, 컨셉으로\n범기 사진 한 장을 요청할 수 있어!\n유효기간 없음 😎',
   },
   {
-    emoji: '🎬',
-    title: '영상 메세지 GET! 🎉',
-    desc: '범기가 직접 찍어서 보내주는\n진심 가득 담긴 영상 편지!\n기대하고 있어도 좋아 💜',
-  },
-  {
     emoji: '⭐',
     title: '소원권 GET! 🎉',
     desc: '소원 하나는 들어줄게.\n(합리적인 범위 내에서 😅)\n원하는 거 말해봐!',
+  },
+  {
+    emoji: '🍀',
+    title: 'LUCKY! 둘 다 GET! 🎊',
+    desc: '사진 요청권 + 소원권\n두 개 동시 획득! 🎉\n대박이다, 축하해!! 🥳',
   },
 ];
 
