@@ -394,7 +394,9 @@
     /* ══════ 룰렛 ══════ */
     #roulette {
       background: linear-gradient(160deg, #1a0040, #0d0520);
-      gap: 24px;
+      gap: 16px;
+      padding: 60px 20px 60px;
+      justify-content: flex-start;
     }
     .roulette-subtitle {
       font-size: clamp(12px, 3.5vw, 14px);
@@ -402,10 +404,14 @@
       text-align: center;
       line-height: 1.7;
     }
+    .wheel-outer {
+      position: relative;
+      padding-top: 28px;
+    }
     .wheel-wrap {
       position: relative;
-      width: min(300px, 82vw);
-      height: min(300px, 82vw);
+      width: min(260px, 68vw);
+      height: min(260px, 68vw);
       margin: 0 auto;
     }
     .wheel-wrap canvas {
@@ -416,19 +422,20 @@
     }
     .wheel-pointer {
       position: absolute;
-      top: -18px;
+      top: 0;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 32px;
+      font-size: 26px;
       filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
       z-index: 2;
       pointer-events: none;
+      line-height: 1;
     }
     .wheel-center {
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 44px; height: 44px;
+      width: 36px; height: 36px;
       border-radius: 50%;
       background: radial-gradient(circle, #fff 0%, #c77dff 100%);
       box-shadow: 0 0 12px rgba(199,125,255,0.6);
@@ -456,12 +463,14 @@
       background: rgba(255,255,255,0.06);
       border: 1.5px solid rgba(199,125,255,0.3);
       border-radius: 20px;
-      padding: 20px 28px;
+      padding: 14px 24px;
       text-align: center;
+      width: 100%;
+      max-width: 320px;
     }
     .roulette-result.show { display: block; }
     .roulette-result .r-num {
-      font-size: clamp(44px, 14vw, 64px);
+      font-size: clamp(36px, 11vw, 52px);
       font-weight: 900;
       background: linear-gradient(135deg, var(--yellow), var(--pink));
       -webkit-background-clip: text;
@@ -702,10 +711,12 @@
     선택한 선물을 몇 개나 받을 수 있는지<br>룰렛을 돌려봐! 🍀
   </p>
 
-  <div class="wheel-wrap">
+  <div class="wheel-outer">
     <div class="wheel-pointer">▼</div>
-    <canvas id="wheelCanvas"></canvas>
-    <div class="wheel-center"></div>
+    <div class="wheel-wrap">
+      <canvas id="wheelCanvas"></canvas>
+      <div class="wheel-center"></div>
+    </div>
   </div>
 
   <button class="btn-roulette" id="btnRoulette" onclick="spinWheel()">🎡 룰렛 돌리기!</button>
