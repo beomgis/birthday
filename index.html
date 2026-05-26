@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>🎂 우신아 생일 축하해!</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --pink: #ff6b9d;
+      --pink2: #ff4081;
+      --light-pink: #ffc8dd;
+      --purple: #c77dff;
+      --purple2: #7c3aed;
+      --yellow: #fde68a;
+      --cream: #fff0f5;
+      --dark: #1a0a2e;
+      --dark2: #2d1040;
+    }
+
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--dark);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ── 파티클 캔버스 ── */
+    #canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── 섹션 공통 ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      min-height: 100dvh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px 80px;
+      scroll-snap-align: start;
+    }
+
+    /* ══════ HERO ══════ */
+    #hero {
+      background: linear-gradient(160deg, #1a0a2e 0%, #2d1040 40%, #3b0764 100%);
+      text-align: center;
+      gap: 0;
+    }
+
+    .cake-anim {
+      font-size: clamp(72px, 20vw, 110px);
+      animation: float 2s ease-in-out infinite;
+      display: block;
+      filter: drop-shadow(0 10px 30px rgba(255,107,157,0.5));
+      margin-bottom: 20px;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0) rotate(-3deg); }
+      50%      { transform: translateY(-16px) rotate(3deg); }
+    }
+
+    .hero-title {
+      font-size: clamp(30px, 9vw, 56px);
+      font-weight: 900;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #ff6b9d, #c77dff, #fde68a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+
+    .hero-sub {
+      font-size: clamp(13px, 3.5vw, 16px);
+      color: #d4a0e8;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      margin-bottom: 22px;
+    }
+
+    .date-badge {
+      display: inline-block;
+      padding: 9px 24px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      border-radius: 50px;
+      font-size: clamp(13px, 3.5vw, 15px);
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(255,107,157,0.45);
+      margin-bottom: 36px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #9b7daa;
+      font-size: 13px;
+      animation: bobDown 1.8s ease-in-out infinite;
+      white-space: nowrap;
+    }
+    @keyframes bobDown {
+      0%,100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+      50%      { opacity: 1;   transform: translateX(-50%) translateY(7px); }
+    }
+
+    /* ══════ 소개 카드 ══════ */
+    #about {
+      background: linear-gradient(160deg, #0f0520, #1a0a2e);
+      gap: 28px;
+    }
+
+    .section-title {
+      font-size: clamp(20px, 6vw, 28px);
+      font-weight: 900;
+      text-align: center;
+    }
+    .section-title .grad {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .info-card {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(199,125,255,0.2);
+      border-radius: 20px;
+      padding: 18px 14px;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: default;
+    }
+    .info-card:active { transform: scale(0.96); }
+    .info-card:hover  { border-color: rgba(255,107,157,0.5); }
+
+    .info-card .ic-icon  { font-size: 32px; margin-bottom: 8px; display: block; }
+    .info-card .ic-label { font-size: 10px; color: #9b7daa; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+    .info-card .ic-value { font-size: clamp(12px, 3.5vw, 14px); font-weight: 700; color: #f0e6ff; margin-top: 5px; line-height: 1.4; }
+    .info-card.full      { grid-column: 1 / -1; }
+
+    .dream-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(255,107,157,0.12);
+      border-radius: 14px;
+    }
+    .dream-row .dr-icon { font-size: 28px; }
+    .dream-row .dr-text { font-size: clamp(12px, 3.5vw, 14px); color: #e9d5ff; line-height: 1.5; text-align: left; }
+
+    /* ══════ 편지 ══════ */
+    #message {
+      background: linear-gradient(160deg, #1a0a2e, #0d0520);
+      gap: 28px;
+    }
+
+    .letter-box {
+      background: rgba(255,255,255,0.05);
+      border: 1.5px solid rgba(199,125,255,0.25);
+      border-radius: 24px;
+      padding: 28px 24px;
+      max-width: 420px;
+      width: 100%;
+      backdrop-filter: blur(8px);
+      position: relative;
+    }
+    .letter-box .quote-mark {
+      position: absolute;
+      top: -4px; left: 18px;
+      font-size: 72px;
+      color: rgba(199,125,255,0.2);
+      line-height: 1;
+      font-family: Georgia, serif;
+      pointer-events: none;
+    }
+    .letter-text {
+      font-size: clamp(13px, 3.8vw, 15px);
+      line-height: 2;
+      color: #e9d5ff;
+      margin-top: 16px;
+    }
+    .letter-text .hl   { color: var(--light-pink); font-weight: 700; }
+    .letter-from {
+      margin-top: 20px;
+      text-align: right;
+      font-size: 13px;
+      color: #9b7daa;
+      font-weight: 700;
+    }
+
+    /* ══════ 선물 뽑기 ══════ */
+    #gift {
+      background: linear-gradient(160deg, #0d0520, #1a0040);
+      gap: 24px;
+    }
+
+    .gift-subtitle {
+      font-size: clamp(12px, 3.5vw, 14px);
+      color: #d4a0e8;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    /* 뽑기 기계 */
+    .gacha-wrap {
+      width: min(300px, 85vw);
+    }
+    .gacha-body {
+      background: linear-gradient(160deg, rgba(124,58,237,0.4), rgba(199,125,255,0.15));
+      border: 2px solid rgba(199,125,255,0.45);
+      border-radius: 28px;
+      padding: 24px 20px 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 40px rgba(124,58,237,0.25), inset 0 0 20px rgba(255,255,255,0.04);
+    }
+    .gacha-globe {
+      width: clamp(120px, 40vw, 150px);
+      height: clamp(120px, 40vw, 150px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.22), rgba(30,0,60,0.6));
+      border: 3px solid rgba(255,255,255,0.25);
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      box-shadow: inset 0 0 20px rgba(255,255,255,0.08), 0 0 30px rgba(199,125,255,0.35);
+    }
+    .gacha-globe.shake {
+      animation: gShake 0.5s ease-in-out;
+    }
+    @keyframes gShake {
+      0%,100%{transform:rotate(0)}
+      15%{transform:rotate(-14deg) scale(1.05)}
+      30%{transform:rotate(14deg)}
+      50%{transform:rotate(-10deg)}
+      70%{transform:rotate(10deg)}
+      85%{transform:rotate(-5deg)}
+    }
+    .gacha-slot-bar {
+      width: 50px; height: 8px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 4px;
+      margin: 0 auto 16px;
+    }
+    .btn-spin {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f59e0b, var(--pink2));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: clamp(14px, 4vw, 16px);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      box-shadow: 0 6px 20px rgba(245,158,11,0.45);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-spin:hover  { transform: scale(1.03); }
+    .btn-spin:active { transform: scale(0.97); }
+    .btn-spin:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* 선물 선택지 */
+    .gifts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .gift-opt {
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,200,221,0.2);
+      border-radius: 18px;
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.22s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .gift-opt:hover { background: rgba(255,107,157,0.15); border-color: rgba(255,107,157,0.5); }
+    .gift-opt.selected {
+      background: rgba(253,230,138,0.14);
+      border-color: var(--yellow);
+      box-shadow: 0 0 20px rgba(253,230,138,0.2);
+    }
+    .gift-opt.locked { opacity: 0.5; cursor: default; pointer-events: none; }
+
+    .gift-opt .g-icon  { font-size: 34px; flex-shrink: 0; }
+    .gift-opt .g-info  { flex: 1; text-align: left; }
+    .gift-opt .g-name  { font-size: clamp(13px, 3.8vw, 15px); font-weight: 700; color: #ffc8dd; }
+    .gift-opt .g-desc  { font-size: clamp(11px, 3vw, 12px); color: #9b7daa; margin-top: 3px; line-height: 1.4; }
+    .gift-opt .g-check { font-size: 20px; opacity: 0; transition: opacity 0.2s; flex-shrink: 0; }
+    .gift-opt.selected .g-check { opacity: 1; }
+
+    .chosen-msg {
+      display: none;
+      margin-top: 4px;
+      padding: 12px 16px;
+      background: rgba(255,107,157,0.12);
+      border-radius: 14px;
+      border: 1px solid rgba(255,107,157,0.3);
+      font-size: 13px;
+      color: var(--light-pink);
+      text-align: center;
+      width: 100%;
+      max-width: 420px;
+    }
+    .chosen-msg.show { display: block; }
+
+    /* ══════ 결과 오버레이 ══════ */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 900;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+    }
+    .overlay.show { display: flex; }
+
+    .result-card {
+      background: linear-gradient(150deg, #2d1040, #1a0a2e);
+      border: 2px solid var(--pink);
+      border-radius: 28px;
+      padding: 36px 28px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 0 50px rgba(255,107,157,0.3);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.65); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    .result-card .r-emoji { font-size: clamp(64px, 18vw, 90px); display: block; margin-bottom: 12px; }
+    .result-card .r-title { font-size: clamp(18px, 5vw, 24px); font-weight: 900; color: var(--yellow); margin-bottom: 10px; }
+    .result-card .r-desc  { font-size: clamp(13px, 3.8vw, 15px); color: #d4a0e8; line-height: 1.8; white-space: pre-line; }
+    .btn-close {
+      margin-top: 24px;
+      padding: 13px 36px;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      box-shadow: 0 6px 20px rgba(255,107,157,0.4);
+    }
+
+    /* ══════ 푸터 ══════ */
+    #footer {
+      scroll-snap-align: start;
+      position: relative;
+      z-index: 1;
+      background: var(--dark);
+      text-align: center;
+      padding: 48px 20px;
+      min-height: 40vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .footer-cats { font-size: 40px; letter-spacing: 8px; }
+    .footer-text { font-size: 14px; color: #9b7daa; line-height: 2; }
+    .footer-text strong { color: var(--light-pink); }
+
+    /* ══════ 색종이 ══════ */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      animation: sparkle-fall 1.4s forwards;
+      font-size: 18px;
+    }
+    @keyframes sparkle-fall {
+      0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(0.5); }
+      60%  { opacity: 1; transform: translateY(-50px) rotate(200deg) scale(1.1); }
+      100% { opacity: 0; transform: translateY(-100px) rotate(360deg) scale(0); }
+    }
+
+    /* ══════ 스크롤 네비 닷 ══════ */
+    .nav-dots {
+      position: fixed;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      z-index: 50;
+    }
+    .ndot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      transition: background 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .ndot.active { background: var(--pink); transform: scale(1.4); }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<!-- 결과 오버레이 -->
+<div class="overlay" id="resultOverlay">
+  <div class="result-card">
+    <span class="r-emoji" id="rEmoji">🎁</span>
+    <div class="r-title" id="rTitle"></div>
+    <div class="r-desc"  id="rDesc"></div>
+    <button class="btn-close" onclick="closeResult()">✨ 확인!</button>
+  </div>
+</div>
+
+<!-- 네비 닷 -->
+<nav class="nav-dots" id="navDots">
+  <div class="ndot active" onclick="scrollToId('hero')"    title="인트로"></div>
+  <div class="ndot"         onclick="scrollToId('about')"   title="소개"></div>
+  <div class="ndot"         onclick="scrollToId('message')" title="편지"></div>
+  <div class="ndot"         onclick="scrollToId('gift')"    title="선물"></div>
+  <div class="ndot"         onclick="scrollToId('footer')"  title="마무리"></div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="section" id="hero">
+  <span class="cake-anim">🎂</span>
+  <h1 class="hero-title">생일 축하해,<br>우신아 💜🎉</h1>
+  <p class="hero-sub">경주 이씨 · 옥돌 우 · 믿을 신 · 사랑하는 사람 💕</p>
+  <div class="date-badge">🎈 2001. 05. 28 🎈</div>
+  <p class="scroll-hint">아래로 내려봐 ↓</p>
+</section>
+
+<!-- ══ 소개 ══ -->
+<section class="section" id="about">
+  <h2 class="section-title"><span class="grad">우신이를 소개합니다</span> ✨</h2>
+  <div class="cards-grid">
+
+    <div class="info-card">
+      <span class="ic-icon">🧠</span>
+      <div class="ic-label">MBTI</div>
+      <div class="ic-value">INTJ</div>
+    </div>
+
+    <div class="info-card">
+      <span class="ic-icon">🎂</span>
+      <div class="ic-label">생일</div>
+      <div class="ic-value">5월 28일</div>
+    </div>
+
+    <div class="info-card">
+      <span class="ic-icon">🐱</span>
+      <div class="ic-label">최애 동물</div>
+      <div class="ic-value">고양이 최애!<br><small style="font-weight:400;color:#9b7daa">강아지도 좋아해</small></div>
+    </div>
+
+    <div class="info-card">
+      <span class="ic-icon">🍓</span>
+      <div class="ic-label">최애 아이스크림</div>
+      <div class="ic-value">사랑에 빠진 딸기</div>
+    </div>
+
+    <div class="info-card">
+      <span class="ic-icon">💼</span>
+      <div class="ic-label">현재</div>
+      <div class="ic-value">분양소 알바 중<br><small style="font-weight:400;color:#9b7daa">매일 고양이랑 함께 ❤️</small></div>
+    </div>
+
+    <div class="info-card">
+      <span class="ic-icon">🎮</span>
+      <div class="ic-label">꿈</div>
+      <div class="ic-value">게임 그래픽<br>디자이너 지망생</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ 편지 ══ -->
+<section class="section" id="message">
+  <h2 class="section-title">✉️ <span class="grad">우신이에게</span></h2>
+  <div class="letter-box">
+    <div class="quote-mark">"</div>
+    <p class="letter-text">
+      우신아, 생일 진심으로 축하해! 🎉<br><br>
+      네 옆에 있을 수 있어서 정말 행복해.<br>
+      <span class="hl">사랑해</span>, 그 말이 제일 먼저 하고 싶었어. 💜<br><br>
+      매일 <span class="hl">고양이랑 강아지</span> 틈바구니에서<br>
+      따뜻하게 일하는 너를 볼 때마다<br>
+      왜 이렇게 예쁘냐고 생각해. 🐱<br><br>
+      INTJ답게 혼자 생각 많이 하는 거 알지만,<br>
+      걱정이나 힘든 거 있으면 나한테 다 말해줘.<br>
+      항상 네 편이야. 🤍<br><br>
+      <span class="hl">게임 그래픽 디자이너</span>라는 꿈,<br>
+      네가 이룰 거라고 나는 진짜 믿어. 🎮✨<br><br>
+      오늘 하루는 <span class="hl">사랑에 빠진 딸기</span><br>
+      아이스크림 먹으면서 푹 쉬어. 🍓<br>
+      스물다섯도, 내 옆에서 빛나줘. 💜
+    </p>
+    <div class="letter-from">— 사랑하는 범기가 💜</div>
+  </div>
+</section>
+
+<!-- ══ 선물 뽑기 ══ -->
+<section class="section" id="gift">
+  <h2 class="section-title">🎰 <span class="grad">생일 선물 뽑기</span></h2>
+  <p class="gift-subtitle">
+    뽑기 버튼을 눌러 랜덤 선물을 뽑거나<br>
+    아래에서 직접 고를 수도 있어! ✨
+  </p>
+
+  <!-- 뽑기 기계 -->
+  <div class="gacha-wrap">
+    <div class="gacha-body">
+      <div class="gacha-globe" id="gachaGlobe">🎁</div>
+      <div class="gacha-slot-bar"></div>
+      <button class="btn-spin" id="btnSpin" onclick="doSpin()">🎰 랜덤 뽑기!</button>
+    </div>
+  </div>
+
+  <!-- 선물 선택지 -->
+  <div class="gifts-list">
+    <div class="gift-opt" id="opt0" onclick="pickGift(0)">
+      <div class="g-icon">📸</div>
+      <div class="g-info">
+        <div class="g-name">범기 사진 요청권</div>
+        <div class="g-desc">원하는 컨셉·장소로 사진 한 장 요청 가능!</div>
+      </div>
+      <div class="g-check">✅</div>
+    </div>
+    <div class="gift-opt" id="opt1" onclick="pickGift(1)">
+      <div class="g-icon">🎬</div>
+      <div class="g-info">
+        <div class="g-name">영상 메세지</div>
+        <div class="g-desc">직접 찍어 보내는 진심 담긴 영상 편지!</div>
+      </div>
+      <div class="g-check">✅</div>
+    </div>
+    <div class="gift-opt" id="opt2" onclick="pickGift(2)">
+      <div class="g-icon">⭐</div>
+      <div class="g-info">
+        <div class="g-name">소원권</div>
+        <div class="g-desc">소원 하나는 들어줄게! (합리적인 범위 😄)</div>
+      </div>
+      <div class="g-check">✅</div>
+    </div>
+  </div>
+
+  <div class="chosen-msg" id="chosenMsg">
+    🎉 선물 선택 완료! 기대해도 좋아 💜
+  </div>
+</section>
+
+<!-- ══ 푸터 ══ -->
+<footer id="footer">
+  <div class="footer-cats">🐱🐶🐱</div>
+  <p class="footer-text">
+    <strong>생일 축하해, 이우신!</strong> 🎂<br>
+    올해도 건강하고 꿈에 한 발짝 더 가까워지길 💜<br>
+    그리고… 사랑해. 항상. 💕<br>
+    <br>
+    Made with 💕 by 사랑하는 범기
+  </p>
+</footer>
+
+<script>
+/* ══════ 파티클 배경 ══════ */
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+let W, H, pts = [];
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const EMOJIS = ['❤️','🌸','⭐','✨','🎀','🍓','🐱','💜','🌙'];
+
+function mkPt() {
+  return {
+    x: Math.random() * W,
+    y: Math.random() * H + H,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: -(Math.random() * 0.7 + 0.15),
+    size: Math.random() * 14 + 9,
+    emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
+    alpha: Math.random() * 0.4 + 0.08,
+  };
+}
+for (let i = 0; i < 35; i++) pts.push(mkPt());
+
+(function loop() {
+  ctx.clearRect(0, 0, W, H);
+  for (const p of pts) {
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.font = `${p.size}px serif`;
+    ctx.fillText(p.emoji, p.x, p.y);
+    ctx.restore();
+    p.x += p.vx;
+    p.y += p.vy;
+    if (p.y < -30) { Object.assign(p, mkPt(), { y: H + 10, x: Math.random() * W }); }
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* ══════ 네비 닷 ══════ */
+const SECTION_IDS = ['hero','about','message','gift','footer'];
+const dots = document.querySelectorAll('.ndot');
+
+function scrollToId(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+function updateDots() {
+  const y = window.scrollY + window.innerHeight / 2;
+  let best = 0, bestDist = Infinity;
+  SECTION_IDS.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const dist = Math.abs(el.getBoundingClientRect().top + window.scrollY + el.offsetHeight / 2 - y);
+    if (dist < bestDist) { bestDist = dist; best = i; }
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i === best));
+}
+window.addEventListener('scroll', updateDots, { passive: true });
+
+/* ══════ 선물 데이터 ══════ */
+const GIFTS = [
+  {
+    emoji: '📸',
+    title: '범기 사진 요청권 GET! 🎉',
+    desc: '원하는 포즈, 장소, 컨셉으로\n범기 사진 한 장을 요청할 수 있어!\n유효기간 없음 😎',
+  },
+  {
+    emoji: '🎬',
+    title: '영상 메세지 GET! 🎉',
+    desc: '범기가 직접 찍어서 보내주는\n진심 가득 담긴 영상 편지!\n기대하고 있어도 좋아 💜',
+  },
+  {
+    emoji: '⭐',
+    title: '소원권 GET! 🎉',
+    desc: '소원 하나는 들어줄게.\n(합리적인 범위 내에서 😅)\n원하는 거 말해봐!',
+  },
+];
+
+let chosen = null;
+let spinning = false;
+
+/* 뽑기 */
+function doSpin() {
+  if (spinning || chosen !== null) return;
+  spinning = true;
+  document.getElementById('btnSpin').disabled = true;
+
+  const globe = document.getElementById('gachaGlobe');
+  globe.classList.add('shake');
+  const faces = ['🎁','🎊','✨','💫','🌟','🎈','🎀'];
+  let t = 0;
+  const iv = setInterval(() => {
+    globe.textContent = faces[t % faces.length];
+    t++;
+    if (t >= 24) {
+      clearInterval(iv);
+      globe.classList.remove('shake');
+      const result = GIFTS[Math.floor(Math.random() * 3)];
+      globe.textContent = result.emoji;
+      spinning = false;
+      setTimeout(() => showResult(result), 180);
+      markChosen(GIFTS.indexOf(result));
+    }
+  }, 80);
+}
+
+/* 직접 선택 */
+function pickGift(idx) {
+  if (chosen !== null || spinning) return;
+  const g = GIFTS[idx];
+  showResult(g);
+  markChosen(idx);
+}
+
+function markChosen(idx) {
+  chosen = idx;
+  document.querySelectorAll('.gift-opt').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+    if (i !== idx) el.classList.add('locked');
+  });
+  document.getElementById('btnSpin').disabled = true;
+  document.getElementById('btnSpin').textContent = '✅ 선물 선택 완료!';
+  document.getElementById('chosenMsg').classList.add('show');
+  document.getElementById('gachaGlobe').textContent = GIFTS[idx].emoji;
+  spawnSparkles();
+}
+
+/* 결과 팝업 */
+function showResult(g) {
+  document.getElementById('rEmoji').textContent = g.emoji;
+  document.getElementById('rTitle').textContent = g.title;
+  document.getElementById('rDesc').textContent  = g.desc;
+  document.getElementById('resultOverlay').classList.add('show');
+  spawnSparkles();
+}
+function closeResult() {
+  document.getElementById('resultOverlay').classList.remove('show');
+}
+
+/* 반짝이 */
+function spawnSparkles() {
+  const pool = ['✨','🌟','💖','🎉','🎊','💜','🩷','⭐','🌸'];
+  for (let i = 0; i < 18; i++) {
+    setTimeout(() => {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.textContent = pool[Math.floor(Math.random() * pool.length)];
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top  = Math.random() * 100 + 'vh';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 1500);
+    }, i * 70);
+  }
+}
+</script>
+</body>
+</html>
