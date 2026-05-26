@@ -391,6 +391,105 @@
       box-shadow: 0 6px 20px rgba(255,107,157,0.4);
     }
 
+    /* ══════ 룰렛 ══════ */
+    #roulette {
+      background: linear-gradient(160deg, #1a0040, #0d0520);
+      gap: 24px;
+    }
+    .roulette-subtitle {
+      font-size: clamp(12px, 3.5vw, 14px);
+      color: #d4a0e8;
+      text-align: center;
+      line-height: 1.7;
+    }
+    .wheel-wrap {
+      position: relative;
+      width: min(300px, 82vw);
+      height: min(300px, 82vw);
+      margin: 0 auto;
+    }
+    .wheel-wrap canvas {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(199,125,255,0.35);
+    }
+    .wheel-pointer {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 32px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+      z-index: 2;
+      pointer-events: none;
+    }
+    .wheel-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, #c77dff 100%);
+      box-shadow: 0 0 12px rgba(199,125,255,0.6);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .btn-roulette {
+      padding: 14px 44px;
+      background: linear-gradient(135deg, var(--purple2), var(--pink));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-size: clamp(14px, 4vw, 16px);
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      box-shadow: 0 6px 20px rgba(124,58,237,0.45);
+      transition: transform 0.15s;
+    }
+    .btn-roulette:hover  { transform: scale(1.04); }
+    .btn-roulette:active { transform: scale(0.97); }
+    .btn-roulette:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .roulette-result {
+      display: none;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(199,125,255,0.3);
+      border-radius: 20px;
+      padding: 20px 28px;
+      text-align: center;
+    }
+    .roulette-result.show { display: block; }
+    .roulette-result .r-num {
+      font-size: clamp(44px, 14vw, 64px);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--yellow), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.1;
+    }
+    .roulette-result .r-label {
+      font-size: clamp(13px, 3.8vw, 15px);
+      color: #e9d5ff;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+    .btn-retry {
+      margin-top: 14px;
+      padding: 10px 28px;
+      background: transparent;
+      border: 1.5px solid var(--purple);
+      color: var(--purple);
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-retry:hover { background: var(--purple); color: #fff; }
+
     /* ══════ 푸터 ══════ */
     #footer {
       scroll-snap-align: start;
@@ -464,8 +563,9 @@
   <div class="ndot active" onclick="scrollToId('hero')"    title="인트로"></div>
   <div class="ndot"         onclick="scrollToId('about')"   title="소개"></div>
   <div class="ndot"         onclick="scrollToId('message')" title="편지"></div>
-  <div class="ndot"         onclick="scrollToId('gift')"    title="선물"></div>
-  <div class="ndot"         onclick="scrollToId('footer')"  title="마무리"></div>
+  <div class="ndot"         onclick="scrollToId('gift')"      title="선물"></div>
+  <div class="ndot"         onclick="scrollToId('roulette')" title="룰렛"></div>
+  <div class="ndot"         onclick="scrollToId('footer')"   title="마무리"></div>
 </nav>
 
 <!-- ══ HERO ══ -->
@@ -595,6 +695,28 @@
   </div>
 </section>
 
+<!-- ══ 룰렛 ══ -->
+<section class="section" id="roulette">
+  <h2 class="section-title">🎡 <span class="grad">몇 개나 받을까?</span></h2>
+  <p class="roulette-subtitle">
+    선택한 선물을 몇 개나 받을 수 있는지<br>룰렛을 돌려봐! 🍀
+  </p>
+
+  <div class="wheel-wrap">
+    <div class="wheel-pointer">▼</div>
+    <canvas id="wheelCanvas"></canvas>
+    <div class="wheel-center"></div>
+  </div>
+
+  <button class="btn-roulette" id="btnRoulette" onclick="spinWheel()">🎡 룰렛 돌리기!</button>
+
+  <div class="roulette-result" id="rouletteResult">
+    <div class="r-num" id="rNum"></div>
+    <div class="r-label" id="rLabel"></div>
+    <button class="btn-retry" onclick="resetWheel()">다시 돌리기 🔄</button>
+  </div>
+</section>
+
 <!-- ══ 푸터 ══ -->
 <footer id="footer">
   <div class="footer-cats">🐱🐶🐱</div>
@@ -651,7 +773,7 @@ for (let i = 0; i < 35; i++) pts.push(mkPt());
 })();
 
 /* ══════ 네비 닷 ══════ */
-const SECTION_IDS = ['hero','about','message','gift','footer'];
+const SECTION_IDS = ['hero','about','message','gift','roulette','footer'];
 const dots = document.querySelectorAll('.ndot');
 
 function scrollToId(id) {
@@ -765,6 +887,148 @@ function spawnSparkles() {
       setTimeout(() => s.remove(), 1500);
     }, i * 70);
   }
+}
+
+/* ══════ 룰렛 ══════ */
+// 항목: [표시값, 확률 가중치]
+// 가중치 합 = 100, 3개가 제일 많이
+const ROULETTE_ITEMS = [
+  { label: '1개',   weight: 12 },
+  { label: '2개',   weight: 18 },
+  { label: '3개',   weight: 38 },
+  { label: '5개',   weight: 15 },
+  { label: '10개',  weight: 10 },
+  { label: '100개', weight:  7 },
+];
+
+const SLICE_COLORS = [
+  ['#7c3aed','#c77dff'],
+  ['#db2777','#ff6b9d'],
+  ['#b45309','#fde68a'],
+  ['#0369a1','#60a5fa'],
+  ['#065f46','#34d399'],
+  ['#9a1111','#f87171'],
+];
+
+const wCanvas  = document.getElementById('wheelCanvas');
+const wCtx     = wCanvas.getContext('2d');
+const N        = ROULETTE_ITEMS.length;
+const SLICE    = (Math.PI * 2) / N;
+let wheelAngle = 0;
+let wheelSpinning = false;
+
+function drawWheel(angle) {
+  const size = wCanvas.width;
+  const cx = size / 2, cy = size / 2, r = size / 2 - 4;
+  wCtx.clearRect(0, 0, size, size);
+
+  ROULETTE_ITEMS.forEach((item, i) => {
+    const start = angle + i * SLICE - Math.PI / 2;
+    const end   = start + SLICE;
+    const [c1, c2] = SLICE_COLORS[i];
+
+    // 부채꼴
+    const grad = wCtx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r);
+    grad.addColorStop(0, c2);
+    grad.addColorStop(1, c1);
+    wCtx.beginPath();
+    wCtx.moveTo(cx, cy);
+    wCtx.arc(cx, cy, r, start, end);
+    wCtx.closePath();
+    wCtx.fillStyle = grad;
+    wCtx.fill();
+    wCtx.strokeStyle = 'rgba(255,255,255,0.15)';
+    wCtx.lineWidth = 2;
+    wCtx.stroke();
+
+    // 텍스트
+    wCtx.save();
+    wCtx.translate(cx, cy);
+    wCtx.rotate(start + SLICE / 2);
+    wCtx.textAlign = 'right';
+    wCtx.fillStyle = '#fff';
+    wCtx.font = `bold ${size * 0.068}px 'Noto Sans KR', sans-serif`;
+    wCtx.shadowColor = 'rgba(0,0,0,0.5)';
+    wCtx.shadowBlur = 4;
+    wCtx.fillText(item.label, r - 12, 6);
+    wCtx.restore();
+  });
+}
+
+function initWheel() {
+  const dpr = window.devicePixelRatio || 1;
+  const box  = wCanvas.parentElement.clientWidth;
+  wCanvas.width  = box * dpr;
+  wCanvas.height = box * dpr;
+  wCtx.scale(dpr, dpr);
+  drawWheel(wheelAngle);
+}
+initWheel();
+window.addEventListener('resize', initWheel);
+
+function weightedPick() {
+  const total = ROULETTE_ITEMS.reduce((s, x) => s + x.weight, 0);
+  let r = Math.random() * total;
+  for (let i = 0; i < ROULETTE_ITEMS.length; i++) {
+    r -= ROULETTE_ITEMS[i].weight;
+    if (r <= 0) return i;
+  }
+  return ROULETTE_ITEMS.length - 1;
+}
+
+function spinWheel() {
+  if (wheelSpinning) return;
+  wheelSpinning = true;
+  document.getElementById('btnRoulette').disabled = true;
+  document.getElementById('rouletteResult').classList.remove('show');
+
+  const targetIdx  = weightedPick();
+  // 포인터가 위(▼)에서 멈추도록 각도 계산
+  // 슬라이스 i의 중앙 각도 = i * SLICE + SLICE/2
+  const targetAngle = -(targetIdx * SLICE + SLICE / 2);
+  const spins = (Math.PI * 2) * (6 + Math.floor(Math.random() * 4));
+  const finalAngle = targetAngle - (wheelAngle % (Math.PI * 2)) + spins;
+
+  const duration = 4000;
+  const start    = performance.now();
+  const startA   = wheelAngle;
+
+  function easeOut(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function frame(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    wheelAngle = startA + finalAngle * easeOut(progress);
+    drawWheel(wheelAngle);
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      wheelSpinning = false;
+      showRouletteResult(targetIdx);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function showRouletteResult(idx) {
+  const item = ROULETTE_ITEMS[idx];
+  const num  = item.label;
+  document.getElementById('rNum').textContent = num;
+
+  const isLucky = num === '100개';
+  document.getElementById('rLabel').innerHTML = isLucky
+    ? `대박‼️ <strong style="color:var(--yellow)">${num}</strong> 획득!<br>오늘은 진짜 럭키데이다 🍀`
+    : `선물 <strong style="color:var(--light-pink)">${num}</strong> 획득! 🎉<br>꼭 다 챙겨줄게 💜`;
+
+  document.getElementById('rouletteResult').classList.add('show');
+  spawnSparkles();
+}
+
+function resetWheel() {
+  document.getElementById('rouletteResult').classList.remove('show');
+  document.getElementById('btnRoulette').disabled = false;
 }
 </script>
 </body>
