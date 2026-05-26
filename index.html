@@ -966,16 +966,32 @@ function drawWheel(angle) {
   });
 }
 
+let wheelInited = false;
+
 function initWheel() {
   const dpr = window.devicePixelRatio || 1;
   const box  = wCanvas.parentElement.clientWidth;
+  if (box === 0) return;
   wCanvas.width  = box * dpr;
   wCanvas.height = box * dpr;
+  wCtx.setTransform(1, 0, 0, 1, 0, 0);
   wCtx.scale(dpr, dpr);
   drawWheel(wheelAngle);
+  wheelInited = true;
 }
-initWheel();
-window.addEventListener('resize', initWheel);
+
+// 섹션이 뷰포트에 들어올 때 초기화
+const wheelObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      initWheel();
+      wheelObserver.disconnect();
+    }
+  });
+}, { threshold: 0.1 });
+wheelObserver.observe(document.getElementById('roulette'));
+
+window.addEventListener('resize', () => { if (wheelInited) initWheel(); });
 
 function weightedPick() {
   const total = ROULETTE_ITEMS.reduce((s, x) => s + x.weight, 0);
