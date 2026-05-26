@@ -345,6 +345,19 @@
       max-width: 420px;
     }
     .chosen-msg.show { display: block; }
+    .btn-retry-gift {
+      background: transparent;
+      border: 1.5px dashed rgba(255,107,157,0.4);
+      color: #9b7daa;
+      border-radius: 50px;
+      padding: 10px 22px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-retry-gift:hover { border-color: var(--pink); color: var(--pink); }
 
     /* ══════ 결과 오버레이 ══════ */
     .overlay {
@@ -702,6 +715,7 @@
   <div class="chosen-msg" id="chosenMsg">
     🎉 선물 선택 완료! 기대해도 좋아 💜
   </div>
+  <button class="btn-retry-gift" id="btnRetryGift" onclick="retryGift()" style="display:none">🤫 범기 몰래 다시 돌리기</button>
 </section>
 
 <!-- ══ 룰렛 ══ -->
@@ -828,8 +842,9 @@ let spinning = false;
 
 /* 뽑기 */
 function doSpin() {
-  if (spinning || chosen !== null) return;
+  if (spinning) return;
   spinning = true;
+  chosen = null;
   document.getElementById('btnSpin').disabled = true;
 
   const globe = document.getElementById('gachaGlobe');
@@ -853,7 +868,7 @@ function doSpin() {
 
 /* 직접 선택 */
 function pickGift(idx) {
-  if (chosen !== null || spinning) return;
+  if (spinning) return;
   const g = GIFTS[idx];
   showResult(g);
   markChosen(idx);
@@ -862,14 +877,29 @@ function pickGift(idx) {
 function markChosen(idx) {
   chosen = idx;
   document.querySelectorAll('.gift-opt').forEach((el, i) => {
+    el.classList.remove('locked');
     el.classList.toggle('selected', i === idx);
-    if (i !== idx) el.classList.add('locked');
   });
   document.getElementById('btnSpin').disabled = true;
   document.getElementById('btnSpin').textContent = '✅ 선물 선택 완료!';
   document.getElementById('chosenMsg').classList.add('show');
+  document.getElementById('btnRetryGift').style.display = 'inline-block';
   document.getElementById('gachaGlobe').textContent = GIFTS[idx].emoji;
   spawnSparkles();
+}
+
+function retryGift() {
+  chosen = null;
+  spinning = false;
+  document.querySelectorAll('.gift-opt').forEach(el => {
+    el.classList.remove('selected', 'locked');
+  });
+  const btn = document.getElementById('btnSpin');
+  btn.disabled = false;
+  btn.textContent = '🎰 랜덤 뽑기!';
+  document.getElementById('chosenMsg').classList.remove('show');
+  document.getElementById('btnRetryGift').style.display = 'none';
+  document.getElementById('gachaGlobe').textContent = '🎁';
 }
 
 /* 결과 팝업 */
