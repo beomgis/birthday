@@ -21,7 +21,10 @@
       --dark2: #2d1040;
     }
 
-    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+    html { scroll-behavior: smooth; }
+    @supports (scroll-snap-type: y mandatory) {
+      html { scroll-snap-type: y mandatory; }
+    }
 
     body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -184,6 +187,7 @@
       padding: 28px 24px;
       max-width: 420px;
       width: 100%;
+      -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
       position: relative;
     }
@@ -233,6 +237,7 @@
       border: 2px solid rgba(199,125,255,0.45);
       border-radius: 28px;
       padding: 24px 20px 20px;
+      -webkit-backdrop-filter: blur(10px);
       backdrop-filter: blur(10px);
       box-shadow: 0 0 40px rgba(124,58,237,0.25), inset 0 0 20px rgba(255,255,255,0.04);
     }
@@ -491,7 +496,7 @@
 
     <div class="info-card">
       <span class="ic-icon">🍓</span>
-      <div class="ic-label">최애 아이스크림</div>
+      <div class="ic-label">최애 베라 아이스크림</div>
       <div class="ic-value">사랑에 빠진 딸기</div>
     </div>
 
